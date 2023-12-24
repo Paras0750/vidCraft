@@ -8,6 +8,7 @@ interface Chapter {
 
 interface VideoDocument extends Document {
   videoId: string;
+  title: string;
   vttFilePath: string;
   videoTranscodePath: Record<string, string>;
   chapters: Chapter[];
@@ -16,6 +17,7 @@ interface VideoDocument extends Document {
 
 const videoSchema = new Schema<VideoDocument>({
   videoId: { type: String, required: true },
+  title: { type: String, required: true },
   vttFilePath: { type: String, required: true },
   videoTranscodePath: { type: Object, required: true },
   chapters: [{ type: Object, required: true }], 

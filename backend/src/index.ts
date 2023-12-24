@@ -9,6 +9,7 @@ import { connectToDatabase } from "../modules/db";
 import VideoModel from "../models/VideoModel";
 import path from "path";
 import videoRoutes from "../routes/videoRoutes";
+import { log } from "console";
 
 const app = express();
 const port = 3004;
@@ -28,6 +29,8 @@ app.post(
   upload.single("video"),
   async (req: Request, res: Response) => {
     const videoId = uuidv4();
+    const { title } = req.body;
+
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
@@ -43,20 +46,19 @@ app.post(
       const videoTranscodePath = await transcodeVideo(req.file.buffer, videoId);
       const chapters = await createChapters(vttFilePath, videoId);
 
-      if (!chapters) throw new Error("Chapters not generated");
-      const parsedData = JSON.parse(chapters.replace(/\\n/g, ""));
       console.log("VTT Path: ", vttFilePath);
       console.log("Final Path: ", videoTranscodePath);
-      console.log("Chapters: ", parsedData);
+      console.log("Chapters: ", chapters);
 
       const videoData = {
         videoId,
+        title,
         vttFilePath,
         videoTranscodePath,
-        chapters: parsedData,
+        chapters,
         thumbnail: "https://picsum.photos/200/300",
       };
-
+ 
       const savedVideo = await VideoModel.create(videoData);
       console.log("Video data saved successfully:", savedVideo);
 

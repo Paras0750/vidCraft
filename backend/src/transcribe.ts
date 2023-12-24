@@ -59,7 +59,9 @@ export const transcribeMedia = async (
     fs.writeFileSync(vttFilePath, response.data);
 
     return vttFilePath;
-  } catch (error) {
+  } catch (error: any) {
+    console.log("error message: ", error.message);
+    
     throw error;
   }
 };
