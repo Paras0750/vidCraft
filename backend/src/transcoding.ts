@@ -8,10 +8,10 @@ export const transcodeVideo = async (inputBuffer: Buffer, videoId: string) => {
   const resolutions = [
     "256x144",
     "426x240",
-    // "640x360",
-    // "854x480",
-    // "1280x720",
-    // "1920x1080",
+    "640x360",
+    "854x480",
+    "1280x720",
+    "1920x1080",
   ];
   const convertedVideos: { [key: string]: string } = {};
 

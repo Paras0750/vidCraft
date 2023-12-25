@@ -30,13 +30,15 @@ export interface APIResponse {
 
 const VideoCard: React.FC<Video> = ({ videoId, thumbnail, title }) => {
   return (
-    <div className="p-4">
-      <div className="bg-white rounded-lg overflow-hidden shadow-md relative">
+    <div className="p-4" style={{ color: "#000" }}>
+      <div className="bg-white rounded-lg overflow-hidden shadow-md relative ">
         <Link to={`/watch/${videoId}`} className="block w-full h-full">
-          <div className="aspect-content">
+          <div className="w-[480px] h-[270px] text-center">
             <img
               className="w-full h-full object-cover"
-              src={thumbnail}
+              src={`${
+                import.meta.env.VITE_API_STREAM_URL
+              }/storage/${thumbnail}`}
               alt={`Thumbnail for ${videoId}`}
             />
           </div>
@@ -63,6 +65,7 @@ export const AllVideos: React.FC = () => {
             return res.data;
           });
         console.log("cc", videos);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error(error.message);
       }

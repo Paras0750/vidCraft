@@ -5,7 +5,7 @@ const Navbar = () => {
   // Replace 'John Doe' with the actual user's name
 
   return (
-    <div className="flex justify-between items-center p-4 bg-slate-500 text-white">
+    <div className="flex justify-between items-center p-4 bg-[#23272d] text-white">
       <div>
         <Link to="/">
           <span className="mx-auto text-2xl font-bold">VidCraft</span>

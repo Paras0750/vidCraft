@@ -3,13 +3,13 @@ import cors from "cors";
 import { upload } from "../modules/multer";
 import { transcribeMedia } from "./transcribe";
 import { createChapters } from "./chapters";
-import { v4 as uuidv4 } from "uuid";
+import { generateThumbnail } from "./stablediff";
 import { transcodeVideo } from "./transcoding";
 import { connectToDatabase } from "../modules/db";
 import VideoModel from "../models/VideoModel";
 import path from "path";
+import { v4 as uuidv4 } from "uuid";
 import videoRoutes from "../routes/videoRoutes";
-import { log } from "console";
 
 const app = express();
 const port = 3004;
@@ -30,6 +30,8 @@ app.post(
   async (req: Request, res: Response) => {
     const videoId = uuidv4();
     const { title } = req.body;
+    const { thumbnailTitle } = req.body;
+    const { thumbnailPrompt } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -43,8 +45,9 @@ app.post(
         fileName,
         videoId
       );
-      const videoTranscodePath = await transcodeVideo(req.file.buffer, videoId);
       const chapters = await createChapters(vttFilePath, videoId);
+      const thumbnail = await generateThumbnail(videoId, thumbnailTitle, thumbnailPrompt);
+      const videoTranscodePath = await transcodeVideo(req.file.buffer, videoId);
 
       console.log("VTT Path: ", vttFilePath);
       console.log("Final Path: ", videoTranscodePath);
@@ -56,9 +59,9 @@ app.post(
         vttFilePath,
         videoTranscodePath,
         chapters,
-        thumbnail: "https://picsum.photos/200/300",
+        thumbnail
       };
- 
+
       const savedVideo = await VideoModel.create(videoData);
       console.log("Video data saved successfully:", savedVideo);
 
@@ -72,6 +75,13 @@ app.post(
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
+});
+
+app.get("/testThumbnail", async (req: Request, res: Response) => {
+  const videoId = uuidv4();
+  const thumbnailTitle = "Intro To Backend";
+  const response = await generateThumbnail(videoId, thumbnailTitle);
+  res.send(response);
 });
 
 app.listen(port, () => {

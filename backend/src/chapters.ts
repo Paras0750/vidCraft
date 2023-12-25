@@ -34,20 +34,16 @@ export const createChapters = async (vttFilePath: string, videoId: string) => {
           role: "system",
           content: `You are a helpful assistant that receives video\'s subtitles in vtt as input and responds back with chapters for complete video in the format:
                       [
-                        { "title": "Introduction", "start": "0:00", "end": "01:34" },
-                        { "title": "Chapter description", "start": "01:35", "end": "02:50" }
-                        { "title": "Chapter description", "start": "02:50", "end": "03:51" }
-                        { "title": "Chapter description", "start": "03:52", "end": "07:45" }
+                        { "title": "Introduction", "start": "00:00:00.000", "end": "00:00:01:34" },
+                        { "title": "Chapter description", "start": "00:00:01:35", "end": "00:00:02:50" }
+                        { "title": "Chapter description", "start": "00:00:02:50", "end": "00:00:03:51" }
+                        { "title": "Chapter description", "start": "00:00:03:52", "end": "00:00:07:45" }
                         ..
-                        { "title": "Outro", "start": "07:46", "end": "10:45" }
+                        { "title": "Outro", "start": "00:00:07:46", "end": "00:00:10:45" }
                       ]
-                      vtt format example: 
-                      WEBVTT
-                      00:00:00.000 --> 00:01:34.000
-                      ...
-                      00:07:46.000 --> 00:10:45.000
 
-                      Your response should be a valid json inside array without the codeblock formatting, don't make too many chapters, 2-3 chapters is enough.Give Response in proper format.`,
+                      I might give you files in parts Your response should be 2-3 meaningful chapters
+                      Your response should be a valid json without the codeblock formatting.`
         },
         {
           role: "user",
@@ -56,8 +52,12 @@ export const createChapters = async (vttFilePath: string, videoId: string) => {
       ],
       model: "gpt-3.5-turbo",
     });
-    // console.log(response.choices[0].message);
-    if (!response.choices[0].message.content) throw new Error("No response");
+    if (!response.choices[0].message.content) {
+      console.error("No response content found");
+      // Handle the error or return an appropriate value
+      return [];
+    }
+
     const chapters = JSON.parse(response.choices[0].message.content);
 
     for (const chapter of chapters) {

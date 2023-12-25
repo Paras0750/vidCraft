@@ -4,6 +4,8 @@ import axios from "axios";
 export const UploadVideo = () => {
   const [file, setFile] = useState<File | null>(null);
   const [title, settitle] = useState<string>("");
+  const [thumbnailTitle, setThumbnailTitle] = useState<string>("");
+  const [thumbnailPrompt, setThumbnailPrompt] = useState<string>("");
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -22,6 +24,8 @@ export const UploadVideo = () => {
 
       formData.append("video", file);
       formData.append("title", title);
+      formData.append("thumbnailTitle", thumbnailTitle);
+      formData.append("thumbnailPrompt", thumbnailPrompt);
 
       console.log(formData);
 
@@ -36,7 +40,9 @@ export const UploadVideo = () => {
       );
       console.log("Data: ", response.data);
       alert("File uploaded successfully!");
-    } catch (error: Error | any) {
+      window.location.href = "/";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error("Error uploading file:", error.message);
       alert("Error uploading file. Please try again.");
     }
@@ -58,6 +64,20 @@ export const UploadVideo = () => {
             placeholder="Enter Title For Video"
             value={title}
             onChange={(e) => settitle(e.target.value)}
+            className="my-4 p-2 border-2 border-gray-300 rounded outline-none"
+          />
+          <input
+            type="text"
+            placeholder="Enter Title For Thumbnail"
+            value={thumbnailTitle}
+            onChange={(e) => setThumbnailTitle(e.target.value)}
+            className="my-4 p-2 border-2 border-gray-300 rounded outline-none"
+          />
+          <input
+            type="text"
+            placeholder="Enter Prompt For Thumbnail Genreation"
+            value={thumbnailPrompt}
+            onChange={(e) => setThumbnailPrompt(e.target.value)}
             className="my-4 p-2 border-2 border-gray-300 rounded outline-none"
           />
           <button

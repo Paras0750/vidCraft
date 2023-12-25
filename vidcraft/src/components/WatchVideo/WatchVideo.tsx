@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
 import { Chapter, Video } from "../AllVideos/AllVideos";
@@ -12,12 +12,10 @@ export const WatchVideo = () => {
     }/uploadedVideos/${videoId}-426x240.mp4`
   );
   const [videoData, setVideoData] = useState<Video>();
-  const [subtitleURL, setSubtitleURL] = useState<string>("");
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const selectRef = useRef<HTMLSelectElement>(null);
   const playerRef = useRef<ReactPlayer>(null);
 
-  // http://localhost:3004/storage/57d86848-3e01-4482-8323-5f3d2f81f139-subtitle.vtt
   useEffect(() => {
     const fetchVideo = async () => {
       try {
@@ -29,6 +27,7 @@ export const WatchVideo = () => {
         console.log("videoData: ", videoData);
         setVideoData(videoData);
         setChapters(videoData.chapters);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error(error.message);
       }
@@ -83,7 +82,9 @@ export const WatchVideo = () => {
 
   return (
     <div>
-      <div className="text-center font-bold text-3xl mt-5 mb-12">{videoData?.title}</div>
+      <div className="text-center font-bold text-3xl mt-5 mb-12">
+        {videoData?.title}
+      </div>
       <div className="flex gap-10">
         <div className="mt-4 mx-3 p-2 bg-gray-50 border rounded w-[20%]">
           <h2 className="text-2xl font-bold mb-6 text-center">Chapters</h2>
@@ -105,7 +106,7 @@ export const WatchVideo = () => {
             ref={playerRef}
             className="video-player aspect-video rounded-3xl"
             url={videoURL}
-            playing={false}
+            playing={true}
             controls={true}
             height={"30%"}
             width={"100%"}
